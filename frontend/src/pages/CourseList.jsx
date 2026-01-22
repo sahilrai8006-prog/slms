@@ -6,10 +6,64 @@ import { BookOpen, Users, Award, ShieldCheck, GraduationCap, Briefcase } from 'l
 
 const Landing = () => {
     const [courses, setCourses] = useState([]);
+    const [filteredCourses, setFilteredCourses] = useState([]);
+    const [enrollments, setEnrollments] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const role = localStorage.getItem('role');
+
+    const categories = ['All', 'Programming', 'Design', 'Business', 'DevOps', 'Other'];
 
     useEffect(() => {
-        api.get('/courses/').then(res => setCourses(res.data)).catch(() => { });
-    }, []);
+        const fetchData = async () => {
+            try {
+                const courseRes = await api.get('/courses/');
+                setCourses(courseRes.data);
+                setFilteredCourses(courseRes.data);
+
+                if (role === 'Student') {
+                    const enrollRes = await api.get('/enrollments/');
+                    setEnrollments(enrollRes.data);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchData();
+    }, [role]);
+
+    useEffect(() => {
+        const filtered = courses.filter(course => {
+            const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                course.description.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
+            return matchesSearch && matchesCategory;
+        });
+        setFilteredCourses(filtered);
+    }, [searchTerm, selectedCategory, courses]);
+
+    const isEnrolled = (courseId) => {
+        return enrollments.some(e => {
+            const id = typeof e.course === 'object' ? e.course.id : e.course;
+            return id === courseId;
+        });
+    };
+
+    const handleEnroll = async (courseId) => {
+        if (!role) {
+            window.location.href = '/login';
+            return;
+        }
+        try {
+            await api.post('/enrollments/', { course: courseId });
+            const enrollRes = await api.get('/enrollments/');
+            setEnrollments(enrollRes.data);
+            alert("Enrolled successfully!");
+        } catch (err) {
+            const msg = err.response?.data ? JSON.stringify(err.response.data) : "Enrollment failed.";
+            alert(msg);
+        }
+    };
 
     return (
         <>
@@ -77,16 +131,57 @@ const Landing = () => {
                 </div>
             </div>
 
-            {/* Featured Courses */}
+            {/* Course Explorer */}
             <div className="container" style={{ margin: '6rem auto 4rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-                    <h2 style={{ fontSize: '2rem' }}>Featured Courses</h2>
-                    <Link to="/courses" style={{ color: 'var(--accent)', fontWeight: '600' }}>View All Courses →</Link>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '4rem' }}>
+                    <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', textAlign: 'center' }}>Explore Our Curriculum</h2>
+                    <p style={{ color: 'var(--text-muted)', textAlign: 'center', maxWidth: '600px', marginBottom: '3rem' }}>
+                        Discover world-class courses designed to help you master new skills and advance your career.
+                    </p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', alignItems: 'center' }}>
+                        <div style={{ position: 'relative', width: '100%', maxWidth: '600px' }}>
+                            <input
+                                type="text"
+                                className="input"
+                                placeholder="Search for courses (e.g. React, Python)..."
+                                style={{ padding: '1.25rem 1.25rem 1.25rem 3.5rem', borderRadius: '50px', fontSize: '1.1rem', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <div style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.25rem' }}>🔍</div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                            {categories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    style={{
+                                        padding: '0.75rem 1.5rem',
+                                        borderRadius: '50px',
+                                        border: '1px solid var(--border)',
+                                        background: selectedCategory === cat ? 'var(--accent)' : 'var(--primary-light)',
+                                        color: selectedCategory === cat ? '#fff' : 'var(--text-main)',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                        transform: selectedCategory === cat ? 'scale(1.05)' : 'scale(1)',
+                                        boxShadow: selectedCategory === cat ? '0 10px 15px -3px rgba(56, 189, 248, 0.4)' : 'none'
+                                    }}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {courses.length > 0 ? courses.slice(0, 3).map(course => (
-                        <div key={course.id} className="card fade-in">
-                            <div style={{ position: 'relative', height: '180px', background: 'var(--primary-dark)', borderRadius: '0.5rem', marginBottom: '1.5rem', overflow: 'hidden' }}>
+                    {filteredCourses.length > 0 ? filteredCourses.map(course => (
+                        <div key={course.id} className="card fade-in" style={{ display: 'flex', flexDirection: 'column', animation: 'fadeIn 0.5s ease forwards' }}>
+                            <div style={{ position: 'relative', height: '200px', background: 'var(--primary-dark)', borderRadius: '1rem', marginBottom: '1.5rem', overflow: 'hidden' }}>
                                 {course.thumbnail ? (
                                     <img src={course.thumbnail} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 ) : (
@@ -94,14 +189,30 @@ const Landing = () => {
                                         <BookOpen size={48} />
                                     </div>
                                 )}
+                                <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', padding: '0.35rem 1rem', borderRadius: '50px', fontSize: '0.75rem', color: '#fff', fontWeight: '700', letterSpacing: '0.05em' }}>
+                                    {course.category}
+                                </div>
                             </div>
-                            <h3>{course.title}</h3>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{course.description.substring(0, 100)}...</p>
-                            <Link to={`/courses/${course.id}`} className="btn btn-secondary" style={{ width: '100%' }}>View Details</Link>
+                            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>{course.title}</h3>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '2rem', flexGrow: 1 }}>{course.description.substring(0, 120)}...</p>
+
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                                <Link to={`/courses/${course.id}`} className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', borderRadius: '0.75rem' }}>Details</Link>
+                                {role === 'Student' && (
+                                    isEnrolled(course.id) ? (
+                                        <button className="btn" disabled style={{ flex: 1.5, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', cursor: 'default', borderRadius: '0.75rem' }}>Enrolled</button>
+                                    ) : (
+                                        <button onClick={() => handleEnroll(course.id)} className="btn btn-primary" style={{ flex: 1.5, borderRadius: '0.75rem' }}>Enroll Now</button>
+                                    )
+                                )}
+                            </div>
                         </div>
                     )) : (
-                        <div className="card" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
-                            <p>Loading premium courses...</p>
+                        <div className="card" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '5rem 2rem' }}>
+                            <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🔎</div>
+                            <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>No matches found</h3>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>We couldn't find any courses matching your search or category selection.</p>
+                            <button onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }} className="btn btn-primary">Reset Filters</button>
                         </div>
                     )}
                 </div>

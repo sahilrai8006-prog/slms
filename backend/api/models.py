@@ -17,8 +17,16 @@ class User(AbstractUser):
         db_table = 'users'
 
 class Course(models.Model):
+    CATEGORIES = [
+        ('Programming', 'Programming'),
+        ('Design', 'Design'),
+        ('Business', 'Business'),
+        ('DevOps', 'DevOps'),
+        ('Other', 'Other'),
+    ]
     title = models.CharField(max_length=200)
     description = models.TextField()
+    category = models.CharField(max_length=50, choices=CATEGORIES, default='Other')
     instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_taught')
     thumbnail = models.ImageField(upload_to='thumbnails/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -89,3 +97,42 @@ class Result(models.Model):
 
     class Meta:
         db_table = 'results'
+
+class LessonCompletion(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lesson_completions')
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='completions')
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'lesson_completions'
+        unique_together = ('student', 'lesson')
+
+    def __str__(self):
+        return f"{self.student.username} completed {self.lesson.title}"
+
+class Announcement(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='announcements')
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'announcements'
+
+class Comment(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'comments'
+
+class Certificate(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='certificates')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    issued_at = models.DateTimeField(auto_now_add=True)
+    certificate_id = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        db_table = 'certificates'

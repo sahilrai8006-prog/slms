@@ -31,13 +31,13 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Actually, we need to map role name to ID or just send ID.
-            // Assuming we know ID or backend handles it.
-            // For this demo, let's Register as basic User and Admin assigns role, or we pass ID 3.
             await api.post('/users/', formData);
+            alert('Registration successful! Please login.');
             navigate('/login');
         } catch (err) {
-            alert('Registration failed');
+            const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : 'Registration failed';
+            alert('Error: ' + errorMsg);
+            console.error(err);
         }
     };
 

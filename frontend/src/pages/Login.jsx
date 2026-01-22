@@ -14,15 +14,19 @@ const Login = () => {
             localStorage.setItem('token', res.data.access);
             localStorage.setItem('refresh', res.data.refresh);
 
-            // Get user role
+            // Get user role and name
             const userRes = await api.get('/users/me/', {
                 headers: { Authorization: `Bearer ${res.data.access}` }
             });
             localStorage.setItem('role', userRes.data.role_name);
+            localStorage.setItem('username', userRes.data.username);
+            localStorage.setItem('first_name', userRes.data.first_name || '');
+            localStorage.setItem('last_name', userRes.data.last_name || '');
 
             navigate('/dashboard');
         } catch (err) {
-            alert('Login failed');
+            const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : 'Login failed';
+            alert('Error: ' + errorMsg);
         }
     };
 

@@ -27,6 +27,7 @@ services:
       SECRET_KEY: prod-secret-key
       DEBUG: 'False'
     volumes:
+      - ./backend:/app
       - media_volume:/app/media
     ports:
       - "8000:8000"
@@ -40,6 +41,9 @@ services:
     build:
       context: ./frontend
     container_name: smartlms_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     networks:
