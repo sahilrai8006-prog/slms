@@ -5,15 +5,17 @@ services:
     image: mysql:8.0
     container_name: smartlms_mysql
     environment:
-      MYSQL_DATABASE: lms_db
-      MYSQL_USER: lms_user
-      MYSQL_PASSWORD: lms_pass
-      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: lmsdb
+      MYSQL_USER: lmsuser
+      MYSQL_PASSWORD: lmspassword
+      MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
-      - mysql_data:/var/lib/mysql
+      - smartlms_data:/var/lib/mysql
     networks:
       - lms_network
     restart: always
+    ports:
+      - "3306:3306"
 
   backend:
     build:

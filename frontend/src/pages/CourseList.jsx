@@ -69,17 +69,31 @@ const Landing = () => {
         <>
             <Navbar />
 
-            {/* Hero Section */}
+            {/* Hero Section - Orange Theme */}
             <div style={{
                 padding: '6rem 0 4rem',
                 textAlign: 'center',
-                background: 'radial-gradient(circle at center, rgba(56, 189, 248, 0.1) 0%, transparent 70%)'
+                background: 'radial-gradient(circle at center, rgba(234, 88, 12, 0.1) 0%, transparent 60%)'
             }}>
                 <div className="container fade-in">
-                    <h1 style={{ fontSize: '4rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '1.5rem' }}>
-                        Master Your Future with <span style={{ background: 'linear-gradient(to right, var(--accent), #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>SmartLMS</span>
+                    <div style={{
+                        marginBottom: '1.5rem',
+                        display: 'inline-block',
+                        padding: '0.5rem 1.5rem',
+                        background: 'rgba(234, 88, 12, 0.1)',
+                        color: '#ea580c',
+                        borderRadius: '50px',
+                        fontSize: '0.9rem',
+                        fontWeight: '600',
+                        border: '1px solid rgba(234, 88, 12, 0.2)'
+                    }}>
+                        🚀 Launching the Future of Education
+                    </div>
+
+                    <h1 style={{ fontSize: '4.5rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '1.5rem', color: '#fff' }}>
+                        Master Your Future with <span style={{ background: 'linear-gradient(to right, #ea580c, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>SmartLMS</span>
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 2.5rem' }}>
+                    <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', maxWidth: '750px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
                         Transforming education through technology. Join thousands of students and expert teachers on the world's most advanced learning platform.
                     </p>
                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
@@ -89,35 +103,35 @@ const Landing = () => {
                 </div>
             </div>
 
-            {/* Portal Selection (The requested 2 sections) */}
+            {/* Portal Selection */}
             <div className="container" style={{ margin: '4rem auto' }}>
                 <h2 style={{ textAlign: 'center', marginBottom: '3rem', fontSize: '2.5rem' }}>Choose Your Path</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '3rem' }}>
 
                     {/* Student Section */}
-                    <div className="card fade-in" style={{ padding: '3rem', cursor: 'default', border: '1px solid var(--accent)' }}>
-                        <div style={{ width: '60px', height: '60px', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: 'var(--accent)' }}>
+                    <div className="card fade-in card-hover" style={{ padding: '3rem', cursor: 'default', border: '1px solid var(--border)' }}>
+                        <div style={{ width: '60px', height: '60px', background: 'rgba(234, 88, 12, 0.1)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#ea580c' }}>
                             <GraduationCap size={32} />
                         </div>
                         <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Student Portal</h3>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1.1rem' }}>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1.1rem', lineHeight: '1.6' }}>
                             Access world-class content, track your progress, and earn certifications that matter. Your journey to excellence starts here.
                         </p>
                         <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2.5rem', color: 'var(--text-main)' }}>
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}><ShieldCheck size={18} color="var(--accent)" /> Interactive Quizzes</li>
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}><ShieldCheck size={18} color="var(--accent)" /> Personalized Dashboard</li>
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}><ShieldCheck size={18} color="var(--accent)" /> Certificate of Completion</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}><ShieldCheck size={18} color="#ea580c" /> Interactive Quizzes</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}><ShieldCheck size={18} color="#ea580c" /> Personalized Dashboard</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}><ShieldCheck size={18} color="#ea580c" /> Certificate of Completion</li>
                         </ul>
                         <Link to="/register" className="btn btn-primary" style={{ width: '100%', fontSize: '1.1rem' }}>Join as Student</Link>
                     </div>
 
                     {/* Teacher Section */}
-                    <div className="card fade-in" style={{ padding: '3rem', cursor: 'default', border: '1px solid #8b5cf6' }}>
+                    <div className="card fade-in card-hover" style={{ padding: '3rem', cursor: 'default', border: '1px solid var(--border)' }}>
                         <div style={{ width: '60px', height: '60px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#8b5cf6' }}>
                             <Briefcase size={32} />
                         </div>
                         <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Teacher Portal</h3>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1.1rem' }}>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1.1rem', lineHeight: '1.6' }}>
                             Share your expertise with the world. Powerful tools to build, manage, and scale your online teaching business.
                         </p>
                         <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2.5rem', color: 'var(--text-main)' }}>
@@ -168,7 +182,7 @@ const Landing = () => {
                                         cursor: 'pointer',
                                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                         transform: selectedCategory === cat ? 'scale(1.05)' : 'scale(1)',
-                                        boxShadow: selectedCategory === cat ? '0 10px 15px -3px rgba(56, 189, 248, 0.4)' : 'none'
+                                        boxShadow: selectedCategory === cat ? '0 10px 15px -3px rgba(234, 88, 12, 0.4)' : 'none'
                                     }}
                                 >
                                     {cat}
@@ -178,9 +192,9 @@ const Landing = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: '2rem' }}>
                     {filteredCourses.length > 0 ? filteredCourses.map(course => (
-                        <div key={course.id} className="card fade-in" style={{ display: 'flex', flexDirection: 'column', animation: 'fadeIn 0.5s ease forwards' }}>
+                        <div key={course.id} className="card fade-in card-hover" style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem' }}>
                             <div style={{ position: 'relative', height: '200px', background: 'var(--primary-dark)', borderRadius: '1rem', marginBottom: '1.5rem', overflow: 'hidden' }}>
                                 {course.thumbnail ? (
                                     <img src={course.thumbnail} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -193,16 +207,16 @@ const Landing = () => {
                                     {course.category}
                                 </div>
                             </div>
-                            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>{course.title}</h3>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '2rem', flexGrow: 1 }}>{course.description.substring(0, 120)}...</p>
+                            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.75rem', fontWeight: '700' }}>{course.title}</h3>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '2rem', flexGrow: 1 }}>{course.description.substring(0, 100)}...</p>
 
-                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
-                                <Link to={`/courses/${course.id}`} className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', borderRadius: '0.75rem' }}>Details</Link>
+                            <div style={{ display: 'flex', gap: '0.75rem', marginTop: 'auto' }}>
+                                <Link to={`/courses/${course.id}`} className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', borderRadius: '0.5rem', fontSize: '0.9rem' }}>Details</Link>
                                 {role === 'Student' && (
                                     isEnrolled(course.id) ? (
-                                        <button className="btn" disabled style={{ flex: 1.5, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', cursor: 'default', borderRadius: '0.75rem' }}>Enrolled</button>
+                                        <button className="btn" disabled style={{ flex: 1.5, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', cursor: 'default', borderRadius: '0.5rem', fontSize: '0.9rem' }}>Enrolled</button>
                                     ) : (
-                                        <button onClick={() => handleEnroll(course.id)} className="btn btn-primary" style={{ flex: 1.5, borderRadius: '0.75rem' }}>Enroll Now</button>
+                                        <button onClick={() => handleEnroll(course.id)} className="btn btn-primary" style={{ flex: 1.5, borderRadius: '0.5rem', fontSize: '0.9rem' }}>Enroll Now</button>
                                     )
                                 )}
                             </div>
@@ -218,20 +232,20 @@ const Landing = () => {
                 </div>
             </div>
 
-            {/* Why Us */}
-            <div style={{ background: 'var(--primary-dark)', padding: '6rem 0', margin: '4rem 0' }}>
+            {/* Stats */}
+            <div style={{ background: 'var(--primary-dark)', padding: '6rem 0', marginTop: '4rem', borderTop: '1px solid var(--border)' }}>
                 <div className="container">
                     <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: '4rem' }}>
                         <div style={{ textAlign: 'center' }}>
-                            <h2 style={{ fontSize: '3rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>10k+</h2>
+                            <h2 style={{ fontSize: '3.5rem', color: '#ea580c', marginBottom: '0.5rem', fontWeight: '800' }}>10k+</h2>
                             <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)' }}>Active Students</p>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <h2 style={{ fontSize: '3rem', color: '#8b5cf6', marginBottom: '0.5rem' }}>500+</h2>
+                            <h2 style={{ fontSize: '3.5rem', color: '#8b5cf6', marginBottom: '0.5rem', fontWeight: '800' }}>500+</h2>
                             <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)' }}>Expert Teachers</p>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <h2 style={{ fontSize: '3rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>1.2k+</h2>
+                            <h2 style={{ fontSize: '3.5rem', color: '#ea580c', marginBottom: '0.5rem', fontWeight: '800' }}>1.2k+</h2>
                             <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)' }}>Premium Courses</p>
                         </div>
                     </div>

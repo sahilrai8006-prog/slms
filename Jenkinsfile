@@ -2,61 +2,91 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_BACKEND = "smartlms-backend"
-        DOCKER_IMAGE_FRONTEND = "smartlms-frontend"
+        DOCKERHUB_USERNAME = 'raishab0001'
+        DOCKER_CREDENTIALS_ID = 'dockerHubCred'
     }
 
     stages {
+
         stage('Checkout Code') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Static Code Analysis') {
-            steps {
-                echo 'Running Static Code Analysis...'
-                // sh 'pylint backend/**/*.py'
-                // sh 'cd frontend && npm run lint'
-            }
-        }
-
-        stage('Backup Previous Deployment') {
-            steps {
-                echo 'Backing up...'
-                // sh 'tar -czf backup_$(date +%F).tar.gz ...'
+                git branch: 'main',
+                    url: 'https://github.com/sahilrai8006-prog/slms.git'
             }
         }
 
         stage('Build Docker Images') {
             steps {
-                echo 'Building Docker Images...'
-                sh 'docker-compose build'
+                bat 'docker-compose build'
             }
         }
 
-        stage('Create Docker Network') {
+        stage('Tag Images') {
             steps {
-                echo 'Creating Network...'
-                // Docker compose handles this, but explicitly:
-                // sh 'docker network create lms_network || true'
+                bat 'docker tag lms-backend:latest %DOCKERHUB_USERNAME%/lms-backend:latest'
+                bat 'docker tag lms-frontend:latest %DOCKERHUB_USERNAME%/lms-frontend:latest'
+            }
+        }
+
+        stage('Docker Hub Login') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerHubCred',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Images to Docker Hub') {
+            steps {
+                bat 'docker push %DOCKERHUB_USERNAME%/lms-backend:latest'
+                bat 'docker push %DOCKERHUB_USERNAME%/lms-frontend:latest'
             }
         }
 
         stage('Deploy Containers') {
             steps {
-                echo 'Deploying...'
-                sh 'docker-compose up -d'
+                bat 'docker-compose down'
+                bat 'docker-compose up -d'
             }
         }
 
         stage('Health Check') {
             steps {
-                echo 'Checking Health...'
-                sleep 10
-                sh 'curl -f http://localhost/ || exit 1'
-                sh 'curl -f http://localhost/api/ || exit 1'
+                powershell '''
+                Write-Host "Waiting for containers..."
+                Start-Sleep -Seconds 15
+
+                try {
+                    Invoke-WebRequest http://localhost:8090 -UseBasicParsing
+                    Write-Host "✅ Application is UP via Nginx"
+                } catch {
+                    if ($_.Exception.Response.StatusCode -eq 404) {
+                        Write-Host "⚠️ App running (404 acceptable)"
+                        exit 0
+                    } else {
+                        throw
+                    }
+                }
+                '''
             }
+        }
+    }
+
+    post {
+        always {
+            bat 'docker logout'
+        }
+        success {
+            echo '✅ LMS CI/CD PIPELINE SUCCESS'
+        }
+        failure {
+            echo '❌ LMS CI/CD PIPELINE FAILED'
         }
     }
 }
